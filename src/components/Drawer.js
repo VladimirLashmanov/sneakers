@@ -1,15 +1,15 @@
 import React from 'react';
 
-const Drawer = () => {
+const Drawer = (props) => {
     return (
         <div>
 
-            <div style={{display: "none"}} className="overlay">
+            <div  className="overlay">
 
 
                 <div className="drawer ">
 
-                    <h2 className='d-flex justify-between mb-30 '>Корзина<img className='removeBtn cu-p'
+                    <h2 className='d-flex justify-between mb-30 '>Корзина<img  onClick={props.onClose}  className='removeBtn cu-p'
                                                                               src="/img/btn-remove.svg" alt="remove"/>
                     </h2>
 
@@ -36,7 +36,7 @@ const Drawer = () => {
                             <div style={{backgroundImage: 'url(/img/sneakers/1.jpg)'}} className="cartItemImg">
 
                             </div>
-                            <div className='mr-20 flex'>
+                            <div className='mr-20 flex '>
                                 <p className='mb-5'>
                                     Мужские Кроссовки Nike Blazer Mid Suede
                                 </p>
