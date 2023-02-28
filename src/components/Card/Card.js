@@ -1,19 +1,25 @@
 import React from 'react';
 import styles from './Card.module.scss'
 
-const Card = ({onFavor,title,imgUrl,price,onPlus}) => {
-const [isAdd,setIsAdd]=React.useState(false)
+const Card = ({id,onFavor, title, imgUrl, price, onPlus,favorited,added=false}) => {
+    const [isAdd, setIsAdd] = React.useState(added)
+    const [isFavor, setIsFavor] = React.useState(favorited)
 
-    const onClickPlus=()=>{
-        onPlus({title,imgUrl,price})
+    const onClickPlus = () => {
+        onPlus({id,title, imgUrl, price})
         setIsAdd(!isAdd)
+    }
+    const onClickFavorit = () => {
+        setIsFavor(isFavor)
+        onFavor({title, imgUrl,price})
+
     }
 
     return (
         <div>
             <div className={styles.card}>
-                <div className={styles.favorite} onClick={onFavor}>
-                    <img src="/img/unliked.svg" alt="unliked"/>
+                <div className={styles.favorite} onClick={onClickFavorit}>
+                    <img src={isFavor ? "/img/liked.svg" : "/img/unliked.svg"} alt="unliked"/>
                 </div>
                 <img width={133} height={112} src={imgUrl} alt=""/>
                 {/*<h5>Мужские Кроссовки Nike Blazer Mid Suede</h5>*/}
@@ -26,7 +32,8 @@ const [isAdd,setIsAdd]=React.useState(false)
                     </div>
 
 
-                        <img  className={styles.plus}  onClick={onClickPlus} src={isAdd ? "/img/btn-checked.svg":"/img/btn-plus.svg"} alt="plus"/>
+                    <img className={styles.plus} onClick={onClickPlus}
+                         src={isAdd ? "/img/btn-checked.svg" : "/img/btn-plus.svg"} alt="plus"/>
 
                 </div>
             </div>
