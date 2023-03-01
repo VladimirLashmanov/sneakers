@@ -6,6 +6,7 @@ import React from "react";
 import axios from "axios";
 import {Route, Routes} from "react-router-dom";
 import Favorites from "./pages/Favorites";
+import AppContext from './context'
 
 // {"name": "Мужские Кроссовки Nike Blazer Mid Suede", "price": 12999, "imgUrl": "/img/sneakers/1.jpg"},
 // {"name": "Мужские Кроссовки Nike Air Max 270", "price": 15600, "imgUrl": "/img/sneakers/2.jpg"},
@@ -24,9 +25,12 @@ function App() {
     const [searchValue, setSearchValue] = React.useState('')
 
     const [cartOpened, setCartOpened] = React.useState(false)
+    const [isLoading, setIsLoading] = React.useState(true)
 
 
     React.useEffect(() => {
+
+
         axios.get('https://63f87c756978b1f9105a6bf7.mockapi.io/items').then(res => {
             setItems(res.data)
         })
@@ -39,9 +43,9 @@ function App() {
     }, [])
 
     const onAddToCard = (obj) => {
-        if (cartItems.find((item)=>Number(item.id)===Number(obj.id))){
+        if (cartItems.find((item) => Number(item.id) === Number(obj.id))) {
             axios.delete(`https://63f87c756978b1f9105a6bf7.mockapi.io/cart/${Number(obj.id)}`)
-           setCartItems(prev=>prev.filter(item=>Number(item.id)!==Number(obj.id)))
+            setCartItems(prev => prev.filter(item => Number(item.id) !== Number(obj.id)))
         } else {
             axios.post('https://63f87c756978b1f9105a6bf7.mockapi.io/cart', obj)
             setCartItems(prev => [...prev, obj])
@@ -53,10 +57,10 @@ function App() {
     }
 
     const onAddFavorite = async (obj) => {
-        if (favorites.find(obj=>obj.id===obj.id)){
-           const {data}=await axios.delete(`https://63f87c756978b1f9105a6bf7.mockapi.io/cart/${obj.id}`)
+        if (favorites.find(obj => obj.id === obj.id)) {
+            const {data} = await axios.delete(`https://63f87c756978b1f9105a6bf7.mockapi.io/cart/${obj.id}`)
             setFavorites(prev => [...prev, prev.filter(item => item.id !== item.id)])
-        }else {
+        } else {
             axios.post('https://63f87c756978b1f9105a6bf7.mockapi.io/items', obj)
             setFavorites(prev => [...prev, obj])
         }
@@ -65,40 +69,46 @@ function App() {
     const onChangeSearchInput = (event) => {
         setSearchValue(event.target.value)
     }
+    const isIemsAdded = (id) => {
+      return   cartItems.some((obj) => Number(obj.id) === Number(id))
+    }
 
     return (
-
-        <div className="wrapper clear">
-
-
-            {cartOpened && <Drawer items={cartItems} onRemove={onRemoveItem} onClose={() => setCartOpened(false)}/>}
-            <Header onClickCart={() => setCartOpened(true)}/>
+        < AppContext.Provider value={{cartItems, favorites, items,isIemsAdded}}>
+            <div className="wrapper clear">
 
 
-            <Routes>
-                <Route path={"/"} element={<Home
-                    cartItems={cartItems}
-                    searchValue={searchValue}
-                    setSearchValue={setSearchValue}
-                    onChangeSearchInput={onChangeSearchInput}
-                    items={items}
-                    onAddToCard={onAddToCard}
-                    onAddFavorite={onAddFavorite}/>}>
-                </Route>
-
-                <Route path={"/favorites"} element={<Favorites
-                    searchValue={searchValue}
-                    setSearchValue={setSearchValue}
-                    onChangeSearchInput={onChangeSearchInput}
-                    items={favorites}
-                    onAddToCard={onAddToCard}
-                    onAddFavorite={onAddFavorite}/>}>
-                </Route>
-
-            </Routes>
+                {cartOpened && <Drawer items={cartItems} onRemove={onRemoveItem} onClose={() => setCartOpened(false)}/>}
+                <Header onClickCart={() => setCartOpened(true)}/>
 
 
-        </div>
+                <Routes>
+                    <Route path={"/"} element={<Home
+                        cartItems={cartItems}
+                        searchValue={searchValue}
+                        setSearchValue={setSearchValue}
+                        onChangeSearchInput={onChangeSearchInput}
+                        items={items}
+                        onAddToCard={onAddToCard}
+                        onAddFavorite={onAddFavorite}
+                        isLoading={isLoading}
+                    />}>
+
+                    </Route>
+
+                    <Route path={"/favorites"} element={<Favorites
+                        searchValue={searchValue}
+                        setSearchValue={setSearchValue}
+                        onChangeSearchInput={onChangeSearchInput}
+                        onAddToCard={onAddToCard}
+                        onAddFavorite={onAddFavorite}/>}>
+                    </Route>
+
+                </Routes>
+
+
+            </div>
+        < /AppContext.Provider>
     );
 }
 

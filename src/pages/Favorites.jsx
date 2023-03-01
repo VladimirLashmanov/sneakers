@@ -1,36 +1,36 @@
 import React from 'react';
 import Card from "../components/Card/Card";
+import AppContext from "../context";
 
-const Favorites = ({items,onAddFavorite}) =>
+const Favorites = ({onAddFavorite}) => {
+        const {favorites} = React.useContext(AppContext)
+        return (
+            <div className="content  p-40">
+                <div className='mb-40 d-flex align-center justify-between'>
+                    <h1>Мои Закладки</h1>
+                </div>
 
-{
-    return (
-        <div className="content  p-40">
-            <div className='mb-40 d-flex align-center justify-between'>
-                <h1>Мои Закладки</h1>
+                <div className="d-flex flex-wrap">
+                    {favorites
+                        .map((item, index) => (
+                            <Card
+                                favorited={true}
+                                key={index}
+                                title={item.name}
+                                price={item.price}
+                                imgUrl={item.imgUrl}
+                                onFavorite={onAddFavorite}
+
+                                // onPlus={(obj) => onAddToCard(obj)}
+                                // onFavor={(obj) => onAddFavorite(obj)}
+                            />
+                        ))}
+                </div>
+
             </div>
 
-            <div className="d-flex flex-wrap">
-                {items
-                    .map((item, index) => (
-                        <Card
-                            favorited={true}
-                            key={index}
-                            title={item.name}
-                            price={item.price}
-                            imgUrl={item.imgUrl}
-                            onFavorite={onAddFavorite}
-
-                            // onPlus={(obj) => onAddToCard(obj)}
-                            // onFavor={(obj) => onAddFavorite(obj)}
-                        />
-                    ))}
-            </div>
-
-        </div>
-
-    );
-}
+        );
+    }
 ;
 
 export default Favorites;
