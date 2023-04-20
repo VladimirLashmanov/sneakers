@@ -4,8 +4,8 @@ import AppContext from "../context";
 
 
 
-const Home = ({isLoading,cartItems, searchValue, setSearchValue, onChangeSearchInput, items, onAddToCard, onAddFavorite}) => {
-    const {isItemAddedt}=React.useContext(AppContext)
+const Home = ({isLoading, searchValue, setSearchValue, onChangeSearchInput, items, onAddToCard, onAddFavorite}) => {
+    const {isItemAdded}=React.useContext(AppContext)
 
         const renderItems = () => {
             return items
@@ -18,7 +18,7 @@ const Home = ({isLoading,cartItems, searchValue, setSearchValue, onChangeSearchI
                             imgUrl={item.imgUrl}
                             onPlus={(obj) => onAddToCard(obj)}
                             onFavor={(obj) => onAddFavorite(obj)}
-                            added={item && item.id}
+
                             loading={false}
                         />
                     ))
