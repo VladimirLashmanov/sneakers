@@ -63,6 +63,10 @@ header {
   .greenButton {
     width: 245px;
     margin-top: 20px;
+    &:disabled{
+      background-color: white;
+      cursor: default;
+    }
 
     &:hover {
       img {

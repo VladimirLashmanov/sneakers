@@ -1,6 +1,28 @@
 import React from 'react';
+import Info from "./Info";
+import AppContext from "../context";
+import axios from "axios";
 
 const Drawer = ({onClose, onRemove, items = []}) => {
+    const {cartItems,setCartItems} = React.useContext(AppContext)
+    const [isOrderComplited, setIsOrderComplited] = React.useState(false)
+    const [orderId, setOrderId] = React.useState(null)
+    const [isLoading, setIsLoading] = React.useState(true)
+
+    const onClickOrder = async () => {
+        try {
+
+            const {data}= await axios.post('/orders', {items:cartItems})
+            setOrderId(data.id)
+            setIsOrderComplited(true)
+            setCartItems([])
+             axios.put('/cart', [])
+        } catch (error){alert('Not order complete')}
+
+
+    }
+
+
     return (
         <div>
 
@@ -17,7 +39,7 @@ const Drawer = ({onClose, onRemove, items = []}) => {
                             <div className="items">
 
                                 {items.map((obj) => (
-                                    <div key={obj.id}  className="cartItem d-flex align-center mb-20">
+                                    <div key={obj.id} className="cartItem d-flex align-center mb-20">
 
                                         <div
                                             style={{backgroundImage: `url(${obj.imgUrl})`}}
@@ -51,21 +73,27 @@ const Drawer = ({onClose, onRemove, items = []}) => {
                                         <b>1074 руб.</b>
                                     </li>
                                 </ul>
-                                <button className='greenButton'>Оформить заказ <img src="/img/arrow.svg" alt="arrow"/>
+                                <button  disabled={isLoading}  onClick={onClickOrder} className='greenButton'>Оформить заказ <img
+                                    src="/img/arrow.svg" alt="arrow"/>
                                 </button>
                             </div>
                         </div>
 
-                    ) : (<div className="cartEmpty d-flex align-center justify-center flex-column flex">
-                        <img className="mb-20" width="120px" src='/img/empty-cart.jpg' alt="Empty"/>
-                        <h2>Card non</h2>
-                        <p className="opacity-6">pleas add to one card </p>
-                        <button onClick={onClose} className="greenButton">
-                            <img src="/img/arrow.svg" alt="Arrow"/>
-                            Вернуться назад
-                        </button>
-                    </div>)}
+                    ) : (
+                        <Info titel={isOrderComplited?'Order Complete':'Card non'} description={isOrderComplited?{orderId}:'pleas add to one card '} image={isOrderComplited?'/img/complete-order.jpg':'/img/empty-cart.jpg'}/>
 
+
+
+                        //     <div className="cartEmpty d-flex align-center justify-center flex-column flex">
+                        //     <img className="mb-20" width="120px" src='/img/empty-cart.jpg' alt="Empty"/>
+                        //     <h2>Card non</h2>
+                        //     <p className="opacity-6">pleas add to one card </p>
+                        //     <button onClick={onClose} className="greenButton">
+                        //         <img src="/img/arrow.svg" alt="Arrow"/>
+                        //         Вернуться назад
+                        //     </button>
+                        // </div>)
+                    )}
 
                 </div>
 
